@@ -8,14 +8,15 @@ import java.util.*;
 /**
  * Soccer player database -- presently, all dummied up
  *
- * @author *** put your name here ***
+ * @author *** Axl Martinez ***
  * @version *** put date of completion here ***
  *
  */
 public class SoccerDatabase implements SoccerDB {
 
     // dummied up variable; you will need to change this
-    private Hashtable database;
+
+    private Hashtable<String, SoccerPlayer> database = new Hashtable<String, SoccerPlayer>();
 
     /**
      * add a player
@@ -25,6 +26,13 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     public boolean addPlayer(String firstName, String lastName,
                              int uniformNumber, String teamName) {
+
+        if(database.get(firstName + " ## " + lastName) == null){
+            SoccerPlayer newplayer = new SoccerPlayer(firstName, lastName, uniformNumber, teamName);
+            database.put(firstName + " ## " + lastName, newplayer);
+            return true;
+        }
+
         return false;
     }
 
@@ -35,6 +43,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean removePlayer(String firstName, String lastName) {
+        if(database.get(firstName + " ## " + lastName) != null){
+            database.remove(firstName + " ## " + lastName);
+            return true;
+        }
         return false;
     }
 
@@ -45,6 +57,11 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public SoccerPlayer getPlayer(String firstName, String lastName) {
+        String key = firstName + " ## " + lastName;
+        if(database.get(key) != null){
+            return database.get(key);
+        }
+
         return null;
     }
 
@@ -55,17 +72,28 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpGoals(String firstName, String lastName) {
-        return false;
+        String key = firstName + " ## " + lastName;
+        if(database.get(key) == null){
+            return false;
+        }
+        database.get(key).bumpGoals();
+        return true;
     }
 
-    /**
+   /**
      * increment a player's yellow cards
      *
      * @see SoccerDB#bumpYellowCards(String, String)
      */
     @Override
     public boolean bumpYellowCards(String firstName, String lastName) {
-        return false;
+
+        String key = firstName + " ## " + lastName;
+        if(database.get(key) == null){
+            return false;
+        }
+        database.get(key).bumpYellowCards();
+        return true;
     }
 
     /**
@@ -75,7 +103,13 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpRedCards(String firstName, String lastName) {
-        return false;
+
+        String key = firstName + " ## " + lastName;
+        if(database.get(key) == null){
+            return false;
+        }
+        database.get(key).bumpRedCards();
+        return true;
     }
 
     /**
@@ -86,8 +120,18 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     // report number of players on a given team (or all players, if null)
     public int numPlayers(String teamName) {
-        return -1;
-    }
+        int Y = 0;
+        Set<String> keys = database.keySet();
+        if(teamName != null){
+          for(String key: keys){
+              if(database.get(key).getTeamName() .equals(teamName)){
+                  Y++;
+              }
+          }
+            return Y;
+        }
+        return database.size();
+        }
 
     /**
      * gives the nth player on a the given team
@@ -97,6 +141,30 @@ public class SoccerDatabase implements SoccerDB {
     // get the nTH player
     @Override
     public SoccerPlayer playerIndex(int idx, String teamName) {
+
+        if(idx > numPlayers(teamName)){
+            return null;
+        }
+
+        int X = 0;
+        Set<String> keys = database.keySet();
+        for(String key: keys){
+            if(teamName != null) {
+                if (database.get(key).getTeamName().equals(teamName)) {
+                    if (X == idx) {
+                        return database.get(key);
+                    }
+                    X++;
+                }
+            }
+            else{
+                if (X == idx) {
+                    return database.get(key);
+                }
+                X++;
+            }
+        }
+
         return null;
     }
 
