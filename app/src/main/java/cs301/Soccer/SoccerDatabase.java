@@ -179,6 +179,7 @@ public class SoccerDatabase implements SoccerDB {
         return file.exists();
     }
 
+
     /**
      * write database data to a file
      *
@@ -189,6 +190,8 @@ public class SoccerDatabase implements SoccerDB {
     public boolean writeData(File file) {
         return false;
     }
+
+
 
     /**
      * helper method that logcat-logs a string, and then returns the string.
@@ -205,6 +208,9 @@ public class SoccerDatabase implements SoccerDB {
      *
      * @see cs301.Soccer.SoccerDB#getTeams()
      */
+
+
+
     // return list of teams
     @Override
     public HashSet<String> getTeams() {
